@@ -1,0 +1,944 @@
+{
+  "address": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+  "network": "localhost",
+  "chainId": 31337,
+  "abi": [
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "reportId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "finder",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "dateFound",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        }
+      ],
+      "name": "FoundReportSubmitted",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "reportId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "reward",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "dateLost",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        }
+      ],
+      "name": "LostReportSubmitted",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "matchId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "confirmedBy",
+          "type": "address"
+        }
+      ],
+      "name": "MatchConfirmed",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "foundReportId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "lostReportId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "matchId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "rewardAmount",
+          "type": "uint256"
+        }
+      ],
+      "name": "PotentialMatchFound",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "matchId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "finder",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "RewardPaid",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "lostReportId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "RewardRefunded",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "lostReportId",
+          "type": "uint256"
+        }
+      ],
+      "name": "cancelLostReport",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "matchId",
+          "type": "uint256"
+        }
+      ],
+      "name": "confirmExchange",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "foundReportMatches",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "foundReports",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
+        },
+        {
+          "components": [
+            {
+              "internalType": "bytes32",
+              "name": "categoryFieldHash",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "subcategoryFieldHash",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "itemTypeFieldHash",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "brandFieldHash",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "colorFieldHash",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "distinctFeaturesFieldHash",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "locationFoundFieldHash",
+              "type": "bytes32"
+            }
+          ],
+          "internalType": "struct LostChain.ItemDescription",
+          "name": "itemDescriptions",
+          "type": "tuple"
+        },
+        {
+          "internalType": "address",
+          "name": "finderWalletAddress",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "dateFound",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "reportTimestamp",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "salt",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bool",
+          "name": "paid",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getContractBalance",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "reportId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getFoundReport",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "id",
+              "type": "uint256"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "bytes32",
+                  "name": "categoryFieldHash",
+                  "type": "bytes32"
+                },
+                {
+                  "internalType": "bytes32",
+                  "name": "subcategoryFieldHash",
+                  "type": "bytes32"
+                },
+                {
+                  "internalType": "bytes32",
+                  "name": "itemTypeFieldHash",
+                  "type": "bytes32"
+                },
+                {
+                  "internalType": "bytes32",
+                  "name": "brandFieldHash",
+                  "type": "bytes32"
+                },
+                {
+                  "internalType": "bytes32",
+                  "name": "colorFieldHash",
+                  "type": "bytes32"
+                },
+                {
+                  "internalType": "bytes32",
+                  "name": "distinctFeaturesFieldHash",
+                  "type": "bytes32"
+                },
+                {
+                  "internalType": "bytes32",
+                  "name": "locationFoundFieldHash",
+                  "type": "bytes32"
+                }
+              ],
+              "internalType": "struct LostChain.ItemDescription",
+              "name": "itemDescriptions",
+              "type": "tuple"
+            },
+            {
+              "internalType": "address",
+              "name": "finderWalletAddress",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "dateFound",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "reportTimestamp",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "salt",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "bool",
+              "name": "paid",
+              "type": "bool"
+            }
+          ],
+          "internalType": "struct LostChain.ReportFoundItem",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "reportId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getLostReport",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "id",
+              "type": "uint256"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "bytes32",
+                  "name": "categoryFieldHash",
+                  "type": "bytes32"
+                },
+                {
+                  "internalType": "bytes32",
+                  "name": "subcategoryFieldHash",
+                  "type": "bytes32"
+                },
+                {
+                  "internalType": "bytes32",
+                  "name": "itemTypeFieldHash",
+                  "type": "bytes32"
+                },
+                {
+                  "internalType": "bytes32",
+                  "name": "brandFieldHash",
+                  "type": "bytes32"
+                },
+                {
+                  "internalType": "bytes32",
+                  "name": "colorFieldHash",
+                  "type": "bytes32"
+                },
+                {
+                  "internalType": "bytes32",
+                  "name": "distinctFeaturesFieldHash",
+                  "type": "bytes32"
+                },
+                {
+                  "internalType": "bytes32",
+                  "name": "locationFoundFieldHash",
+                  "type": "bytes32"
+                }
+              ],
+              "internalType": "struct LostChain.ItemDescription",
+              "name": "itemDescriptions",
+              "type": "tuple"
+            },
+            {
+              "internalType": "address",
+              "name": "ownerWalletAddress",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "ethRewardAmount",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "dateLost",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "reportTimestamp",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "salt",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "bool",
+              "name": "matched",
+              "type": "bool"
+            },
+            {
+              "internalType": "bool",
+              "name": "refunded",
+              "type": "bool"
+            }
+          ],
+          "internalType": "struct LostChain.ReportLostItem",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "matchId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getMatch",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "foundReportId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "lostReportId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "finderAddress",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "ownerAddress",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "ethRewardAmount",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "matchTimestamp",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bool",
+              "name": "paid",
+              "type": "bool"
+            },
+            {
+              "internalType": "bool",
+              "name": "confirmed",
+              "type": "bool"
+            }
+          ],
+          "internalType": "struct LostChain.LostFoundMatch",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "text",
+          "type": "string"
+        }
+      ],
+      "name": "hashText",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "lostReportMatches",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "lostReports",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
+        },
+        {
+          "components": [
+            {
+              "internalType": "bytes32",
+              "name": "categoryFieldHash",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "subcategoryFieldHash",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "itemTypeFieldHash",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "brandFieldHash",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "colorFieldHash",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "distinctFeaturesFieldHash",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "locationFoundFieldHash",
+              "type": "bytes32"
+            }
+          ],
+          "internalType": "struct LostChain.ItemDescription",
+          "name": "itemDescriptions",
+          "type": "tuple"
+        },
+        {
+          "internalType": "address",
+          "name": "ownerWalletAddress",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "ethRewardAmount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "dateLost",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "reportTimestamp",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "salt",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bool",
+          "name": "matched",
+          "type": "bool"
+        },
+        {
+          "internalType": "bool",
+          "name": "refunded",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "matches",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "foundReportId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "lostReportId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "finderAddress",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "ownerAddress",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "ethRewardAmount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "matchTimestamp",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bool",
+          "name": "paid",
+          "type": "bool"
+        },
+        {
+          "internalType": "bool",
+          "name": "confirmed",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "minReward",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "numFoundReports",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "numLostReports",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "numMatches",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "categoryFieldHash",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "subcategoryFieldHash",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "itemTypeFieldHash",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "brandFieldHash",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "colorFieldHash",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "distinctFeaturesFieldHash",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "locationFoundFieldHash",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "uint256",
+          "name": "dateFound",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "salt",
+          "type": "bytes32"
+        }
+      ],
+      "name": "reportFoundItem",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "categoryFieldHash",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "subcategoryFieldHash",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "itemTypeFieldHash",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "brandFieldHash",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "colorFieldHash",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "distinctFeaturesFieldHash",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "locationFoundFieldHash",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "uint256",
+          "name": "dateLost",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "salt",
+          "type": "bytes32"
+        }
+      ],
+      "name": "reportLostItem",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "payable",
+      "type": "function"
+    }
+  ]
+}

@@ -3,37 +3,51 @@
 import Link from "next/link";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { CheckCircle2, ArrowRight, Bell, Search, FileText } from "lucide-react";
+import { CheckCircle2, ArrowRight, Sparkles, ShieldCheck } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 
 function ConfirmationContent() {
   const searchParams = useSearchParams();
-  const type = searchParams.get("type"); // 'find' or 'report'
+  const type = searchParams.get("type");
   const isFind = type === "find";
 
   return (
-    <main className="min-h-screen bg-gray-50 flex flex-col">
-      {/* Header */}
-      <header className="w-full px-6 py-4 flex items-center justify-between border-b bg-white">
-        <Link href="/">
-          <h1 className="text-3xl font-bold tracking-tight text-blue-600 hover:text-blue-700 transition-colors cursor-pointer">
-            LostChain
-          </h1>
+    <main className="min-h-screen bg-[#000F08] text-white flex flex-col relative selection:bg-[#FB3640] selection:text-white">
+      {/* Liquid Glass Header */}
+      <header className="w-full px-8 py-5 flex items-center justify-between border-b border-white/10 bg-[#000F08]/75 backdrop-blur-xl sticky top-0 z-50">
+        <Link href="/" className="flex items-center gap-2.5 group">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#FB3640] to-[#991B1B] flex items-center justify-center shadow-[0_0_15px_rgba(251,54,64,0.4)]">
+            <Sparkles className="w-4 h-4 text-white" />
+          </div>
+          <span className="font-kontras text-3xl font-semibold tracking-tight text-white group-hover:text-[#FB3640] transition-colors">
+            Lost<span className="text-[#FB3640]">Chain</span>
+          </span>
         </Link>
-        
+
         <nav className="flex items-center gap-8">
-          <Link href="/find" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
+          <Link
+            href="/find"
+            className="text-sm font-medium text-gray-300 hover:text-[#FB3640] transition-colors"
+          >
             Find Item
           </Link>
-          <Link href="/report" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
+          <Link
+            href="/report"
+            className="text-sm font-medium text-gray-300 hover:text-[#FB3640] transition-colors"
+          >
             Report Item
           </Link>
-          <Link href="/dashboard" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
+          <Link
+            href="/dashboard"
+            className="text-sm font-medium text-gray-300 hover:text-[#FB3640] transition-colors"
+          >
             Dashboard
           </Link>
-          <Link href="/about" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
+          <Link
+            href="/about"
+            className="text-sm font-medium text-gray-300 hover:text-[#FB3640] transition-colors"
+          >
             About
           </Link>
           <ConnectButton />
@@ -41,159 +55,78 @@ function ConfirmationContent() {
       </header>
 
       {/* Confirmation Section */}
-      <section className="max-w-3xl mx-auto mt-16 px-6 pb-12 w-full">
-        {/* Success Icon and Message */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-green-100 mb-6">
-            <CheckCircle2 className="w-12 h-12 text-green-600" />
+      <section className="max-w-3xl mx-auto mt-16 px-6 pb-20 w-full">
+        <div className="text-center mb-10">
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 mb-6 shadow-[0_0_35px_rgba(16,185,129,0.3)]">
+            <CheckCircle2 className="w-10 h-10" />
           </div>
-          <h1 className="text-4xl font-bold tracking-tight mb-3">
-            {isFind ? "Lost Item Report Submitted!" : "Found Item Report Submitted!"}
+          <h1 className="font-kontras text-5xl md:text-6xl font-bold tracking-tight mb-4 text-white">
+            {isFind ? "Report Registered in Escrow" : "Found Item Submitted"}
           </h1>
-          <p className="text-xl text-gray-600">
-            {isFind 
-              ? "Your report has been recorded on the blockchain. We'll notify you if a match is found."
-              : "Thank you for helping! The owner will be notified if there's a match."}
+          <p className="text-gray-300 text-lg max-w-xl mx-auto font-light">
+            {isFind
+              ? "Your lost item specification and bounty have been securely committed to the blockchain."
+              : "Thank you for being an honest finder! You will be notified the instant a claim matches."}
           </p>
         </div>
 
-        {/* What Happens Next */}
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <ArrowRight className="w-5 h-5 text-blue-600" />
-              What Happens Next?
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {isFind ? (
-              <>
-                <div className="flex gap-4">
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-semibold">
-                    1
-                  </div>
-                  <div>
-                    <h3 className="font-semibold mb-1">Smart Contract Matching</h3>
-                    <p className="text-gray-600 text-sm">
-                      Our blockchain system will automatically search for matching found items based on your description.
-                    </p>
-                  </div>
-                </div>
-                <div className="flex gap-4">
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-semibold">
-                    2
-                  </div>
-                  <div>
-                    <h3 className="font-semibold mb-1">Notification</h3>
-                    <p className="text-gray-600 text-sm">
-                      If a match is found, you'll receive a notification with details about where to pick up your item.
-                    </p>
-                  </div>
-                </div>
-                <div className="flex gap-4">
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-semibold">
-                    3
-                  </div>
-                  <div>
-                    <h3 className="font-semibold mb-1">Verification & Reward</h3>
-                    <p className="text-gray-600 text-sm">
-                      Verify ownership by providing the distinct features you described. Your reward will be automatically released to the finder.
-                    </p>
-                  </div>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="flex gap-4">
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-semibold">
-                    1
-                  </div>
-                  <div>
-                    <h3 className="font-semibold mb-1">Blockchain Recording</h3>
-                    <p className="text-gray-600 text-sm">
-                      Your found item report is now permanently recorded on the blockchain for transparency and security.
-                    </p>
-                  </div>
-                </div>
-                <div className="flex gap-4">
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-semibold">
-                    2
-                  </div>
-                  <div>
-                    <h3 className="font-semibold mb-1">Automatic Matching</h3>
-                    <p className="text-gray-600 text-sm">
-                      The system will check for matching lost item reports and notify the owner if there's a match.
-                    </p>
-                  </div>
-                </div>
-                <div className="flex gap-4">
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-semibold">
-                    3
-                  </div>
-                  <div>
-                    <h3 className="font-semibold mb-1">Reward Collection</h3>
-                    <p className="text-gray-600 text-sm">
-                      Once the owner verifies and picks up their item, you'll automatically receive the reward in ETH.
-                    </p>
-                  </div>
-                </div>
-              </>
-            )}
-          </CardContent>
-        </Card>
+        {/* What Happens Next Card */}
+        <div className="glass-panel p-8 rounded-3xl mb-8 border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.6)]">
+          <h2 className="font-kontras text-2xl font-bold text-white mb-6 flex items-center gap-2.5">
+            <ShieldCheck className="w-6 h-6 text-[#FB3640]" />
+            What Happens Next?
+          </h2>
 
-        {/* Quick Actions */}
-        <div className="grid md:grid-cols-3 gap-4 mb-8">
-          <Card className="hover:shadow-md transition-shadow cursor-pointer">
-            <Link href="/dashboard">
-              <CardHeader className="pb-3">
-                <Bell className="w-8 h-8 text-blue-600 mb-2" />
-                <CardTitle className="text-lg">View Dashboard</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription>
-                  Track your submissions and check for matches
-                </CardDescription>
-              </CardContent>
-            </Link>
-          </Card>
+          <div className="space-y-6">
+            <div className="flex gap-4">
+              <span className="font-kontras text-2xl font-bold text-[#FB3640] w-8 h-8 rounded-xl bg-white/[0.04] border border-white/10 flex items-center justify-center shrink-0">
+                1
+              </span>
+              <div>
+                <h3 className="font-semibold text-white mb-1">Cryptographic Match</h3>
+                <p className="text-sm text-gray-400 leading-relaxed">
+                  The protocol automatically searches for opposite-type reports with matching hashes across the blockchain.
+                </p>
+              </div>
+            </div>
 
-          <Card className="hover:shadow-md transition-shadow cursor-pointer">
-            <Link href={isFind ? "/report" : "/find"}>
-              <CardHeader className="pb-3">
-                <Search className="w-8 h-8 text-blue-600 mb-2" />
-                <CardTitle className="text-lg">
-                  {isFind ? "Report Found Item" : "Find Lost Item"}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription>
-                  {isFind ? "Found something? Report it here" : "Lost something else? Report it"}
-                </CardDescription>
-              </CardContent>
-            </Link>
-          </Card>
+            <div className="flex gap-4">
+              <span className="font-kontras text-2xl font-bold text-[#FB3640] w-8 h-8 rounded-xl bg-white/[0.04] border border-white/10 flex items-center justify-center shrink-0">
+                2
+              </span>
+              <div>
+                <h3 className="font-semibold text-white mb-1">Dashboard Alert</h3>
+                <p className="text-sm text-gray-400 leading-relaxed">
+                  Both parties receive an active match notification on their personal Command Center with contact details for meetup.
+                </p>
+              </div>
+            </div>
 
-          <Card className="hover:shadow-md transition-shadow cursor-pointer">
-            <Link href="/about">
-              <CardHeader className="pb-3">
-                <FileText className="w-8 h-8 text-blue-600 mb-2" />
-                <CardTitle className="text-lg">Learn More</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription>
-                  How LostChain works and our mission
-                </CardDescription>
-              </CardContent>
-            </Link>
-          </Card>
+            <div className="flex gap-4">
+              <span className="font-kontras text-2xl font-bold text-[#FB3640] w-8 h-8 rounded-xl bg-white/[0.04] border border-white/10 flex items-center justify-center shrink-0">
+                3
+              </span>
+              <div>
+                <h3 className="font-semibold text-white mb-1">Physical Handover & Bounty Release</h3>
+                <p className="text-sm text-gray-400 leading-relaxed">
+                  Ownership is verified in person. When the owner confirms exchange, the smart contract automatically transfers the reward directly to the finder!
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* Return Home Button */}
-        <div className="text-center">
+        {/* Action Buttons */}
+        <div className="flex flex-wrap gap-4 justify-center">
+          <Link href="/dashboard">
+            <Button className="btn-imperial px-8 py-6 rounded-xl text-base font-semibold flex items-center gap-2 shadow-[0_0_20px_rgba(251,54,64,0.35)]">
+              Go to Command Center
+              <ArrowRight className="w-4 h-4" />
+            </Button>
+          </Link>
           <Link href="/">
-            <Button size="lg" className="px-8">
-              Return to Home
+            <Button variant="outline" className="btn-glass px-8 py-6 rounded-xl text-base font-semibold">
+              Return Home
             </Button>
           </Link>
         </div>
@@ -204,14 +137,13 @@ function ConfirmationContent() {
 
 export default function ConfirmationPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-          <p className="mt-4 text-gray-600">Loading...</p>
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-[#000F08] text-white flex items-center justify-center">
+          <p className="font-kontras text-2xl text-gray-400">Loading receipt...</p>
         </div>
-      </div>
-    }>
+      }
+    >
       <ConfirmationContent />
     </Suspense>
   );

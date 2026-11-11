@@ -14,6 +14,9 @@ const nextConfig: NextConfig = {
     ],
   },
   
+  // Turbopack configuration
+  turbopack: {},
+
   // Webpack configuration for Web3 libraries
   webpack: (config) => {
     config.resolve.fallback = {

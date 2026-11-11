@@ -2,31 +2,46 @@
 
 import Link from "next/link";
 import { AuthButton } from "@/components/auth-button";
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Sparkles, Shield, Lock, Zap, ArrowRight } from "lucide-react";
 
 export default function AboutPage() {
   return (
-    <main className="min-h-screen bg-gray-50 flex flex-col">
-      {/* Header */}
-      <header className="w-full px-6 py-4 flex items-center justify-between border-b bg-white">
-        <Link href="/">
-          <h1 className="text-3xl font-bold tracking-tight text-blue-600 hover:text-blue-700 transition-colors cursor-pointer">
-            LostChain
-          </h1>
+    <main className="min-h-screen bg-[#000F08] text-white flex flex-col relative selection:bg-[#FB3640] selection:text-white">
+      {/* Liquid Glass Header */}
+      <header className="w-full px-8 py-5 flex items-center justify-between border-b border-white/10 bg-[#000F08]/75 backdrop-blur-xl sticky top-0 z-50">
+        <Link href="/" className="flex items-center gap-2.5 group">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#FB3640] to-[#991B1B] flex items-center justify-center shadow-[0_0_15px_rgba(251,54,64,0.4)]">
+            <Sparkles className="w-4 h-4 text-white" />
+          </div>
+          <span className="font-kontras text-3xl font-semibold tracking-tight text-white group-hover:text-[#FB3640] transition-colors">
+            Lost<span className="text-[#FB3640]">Chain</span>
+          </span>
         </Link>
-        
+
         <nav className="flex items-center gap-8">
-          <Link href="/find" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
+          <Link
+            href="/find"
+            className="text-sm font-medium text-gray-300 hover:text-[#FB3640] transition-colors"
+          >
             Find Item
           </Link>
-          <Link href="/report" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
+          <Link
+            href="/report"
+            className="text-sm font-medium text-gray-300 hover:text-[#FB3640] transition-colors"
+          >
             Report Item
           </Link>
-          <Link href="/dashboard" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
+          <Link
+            href="/dashboard"
+            className="text-sm font-medium text-gray-300 hover:text-[#FB3640] transition-colors"
+          >
             Dashboard
           </Link>
-          <Link href="/about" className="text-blue-600 hover:text-blue-700 font-medium transition-colors">
+          <Link
+            href="/about"
+            className="text-sm font-medium text-[#FB3640] transition-colors"
+          >
             About
           </Link>
           <AuthButton />
@@ -34,206 +49,145 @@ export default function AboutPage() {
       </header>
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-blue-600 to-blue-800 text-white py-20 px-6">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-5xl font-bold mb-6">About LostChain</h2>
-          <p className="text-xl text-blue-100 leading-relaxed">
-            A blockchain-powered lost and found platform designed to reunite college students 
-            with their belongings through trustless, transparent, and incentivized matching.
-          </p>
+      <section className="relative py-24 px-8 max-w-5xl mx-auto text-center w-full">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-white/10 text-xs tracking-wider uppercase text-gray-300 mb-6 backdrop-blur-md">
+          <span className="w-2 h-2 rounded-full bg-[#FB3640] animate-pulse" />
+          The Philosophy Behind LostChain
         </div>
+        <h1 className="font-kontras text-6xl md:text-8xl font-bold tracking-tight text-white mb-6">
+          Architected for <br />
+          <span className="text-gradient-coral italic font-normal">Trust & Privacy</span>
+        </h1>
+        <p className="text-gray-300 text-lg md:text-xl font-light leading-relaxed max-w-3xl mx-auto">
+          A decentralized protocol designed to reunite individuals with their belongings through
+          cryptographic commitments, smart contract escrow, and fraud-resistant verification.
+        </p>
       </section>
 
-      {/* Mission Section */}
-      <section className="max-w-6xl mx-auto py-16 px-6">
-        <div className="text-center mb-12">
-          <h3 className="text-3xl font-bold mb-4">Our Mission</h3>
-          <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-            We believe that losing something shouldn't mean it's gone forever. LostChain leverages 
-            blockchain technology to create a secure, fraud-resistant platform that rewards honesty 
-            and makes it easy to return lost items to their rightful owners.
-          </p>
-        </div>
-
-        {/* Core Values */}
-        <div className="grid md:grid-cols-3 gap-8 mt-12">
-          <Card className="text-center">
-            <CardContent className="p-8">
-              <div className="text-4xl mb-4">🔒</div>
-              <h4 className="text-xl font-semibold mb-3">Privacy First</h4>
-              <p className="text-gray-600">
-                Cryptographic hashing ensures item details remain private until a match is confirmed, 
-                protecting both finders and owners.
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="text-center">
-            <CardContent className="p-8">
-              <div className="text-4xl mb-4">🤝</div>
-              <h4 className="text-xl font-semibold mb-3">Trustless System</h4>
-              <p className="text-gray-600">
-                Smart contracts eliminate the need for intermediaries, automatically matching items 
-                and distributing rewards without human intervention.
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="text-center">
-            <CardContent className="p-8">
-              <div className="text-4xl mb-4">💎</div>
-              <h4 className="text-xl font-semibold mb-3">Incentivized Honesty</h4>
-              <p className="text-gray-600">
-                Finders are rewarded with cryptocurrency for reporting items, creating a positive 
-                incentive structure that encourages good behavior.
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
-
-      {/* How It Works Section */}
-      <section className="bg-white py-16 px-6">
-        <div className="max-w-6xl mx-auto">
-          <h3 className="text-3xl font-bold text-center mb-12">How It Works</h3>
-          
-          <div className="space-y-12">
-            {/* Step 1 */}
-            <div className="flex flex-col md:flex-row items-center gap-8">
-              <div className="flex-shrink-0 w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center text-2xl font-bold">
-                1
-              </div>
-              <div className="flex-1">
-                <h4 className="text-2xl font-semibold mb-3">Report a Found Item</h4>
-                <p className="text-gray-600 text-lg">
-                  A finder discovers a lost item and reports it on LostChain. They provide detailed 
-                  information including the item name, brand, color, distinctive features, and where 
-                  it was found. This information is hashed using cryptographic algorithms before being 
-                  stored on the blockchain.
-                </p>
-              </div>
+      {/* Core Values Liquid Glass Grid */}
+      <section className="max-w-7xl mx-auto px-8 py-12 w-full">
+        <div className="grid md:grid-cols-3 gap-8">
+          <div className="glass-panel glass-panel-hover p-8 rounded-3xl relative overflow-hidden group">
+            <div className="w-12 h-12 rounded-xl bg-[#FB3640]/15 border border-[#FB3640]/30 flex items-center justify-center mb-6 text-[#FB3640]">
+              <Lock className="w-6 h-6" />
             </div>
+            <h3 className="font-kontras text-2xl font-bold text-white mb-3">
+              Privacy First
+            </h3>
+            <p className="text-gray-400 text-sm leading-relaxed">
+              Cryptographic hashing guarantees your private serial numbers, stickers, and distinctive
+              identifiers remain undisclosed until physical verification.
+            </p>
+          </div>
 
-            {/* Step 2 */}
-            <div className="flex flex-col md:flex-row items-center gap-8">
-              <div className="flex-shrink-0 w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center text-2xl font-bold">
-                2
-              </div>
-              <div className="flex-1">
-                <h4 className="text-2xl font-semibold mb-3">Submit a Lost Item Claim</h4>
-                <p className="text-gray-600 text-lg">
-                  The owner realizes their item is missing and submits a claim with matching details. 
-                  They also attach an ETH reward (minimum 0.001 ETH) that gets locked in the smart 
-                  contract as escrow. The claim details are also hashed for privacy.
-                </p>
-              </div>
+          <div className="glass-panel glass-panel-hover p-8 rounded-3xl relative overflow-hidden group">
+            <div className="w-12 h-12 rounded-xl bg-[#FB3640]/15 border border-[#FB3640]/30 flex items-center justify-center mb-6 text-[#FB3640]">
+              <Shield className="w-6 h-6" />
             </div>
+            <h3 className="font-kontras text-2xl font-bold text-white mb-3">
+              Trustless Escrow
+            </h3>
+            <p className="text-gray-400 text-sm leading-relaxed">
+              Smart contracts eliminate the middleman. Funds are locked in an autonomous digital
+              safe that releases only upon mutual confirmation.
+            </p>
+          </div>
 
-            {/* Step 3 */}
-            <div className="flex flex-col md:flex-row items-center gap-8">
-              <div className="flex-shrink-0 w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center text-2xl font-bold">
-                3
-              </div>
-              <div className="flex-1">
-                <h4 className="text-2xl font-semibold mb-3">Automatic Matching</h4>
-                <p className="text-gray-600 text-lg">
-                  The smart contract automatically compares the cryptographic hashes of all found and 
-                  lost reports. When all hashes match (item name, brand, model, color, condition, 
-                  location, and distinctive features), a potential match is created.
-                </p>
-              </div>
+          <div className="glass-panel glass-panel-hover p-8 rounded-3xl relative overflow-hidden group">
+            <div className="w-12 h-12 rounded-xl bg-[#FB3640]/15 border border-[#FB3640]/30 flex items-center justify-center mb-6 text-[#FB3640]">
+              <Zap className="w-6 h-6" />
             </div>
-
-            {/* Step 4 */}
-            <div className="flex flex-col md:flex-row items-center gap-8">
-              <div className="flex-shrink-0 w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center text-2xl font-bold">
-                4
-              </div>
-              <div className="flex-1">
-                <h4 className="text-2xl font-semibold mb-3">Confirm Exchange & Get Rewarded</h4>
-                <p className="text-gray-600 text-lg">
-                  Both parties are notified of the match and can coordinate the physical exchange. 
-                  Once either party confirms the exchange in the app, the smart contract automatically 
-                  releases the escrowed ETH reward to the finder's wallet. No intermediaries needed!
-                </p>
-              </div>
-            </div>
+            <h3 className="font-kontras text-2xl font-bold text-white mb-3">
+              Incentivized Honesty
+            </h3>
+            <p className="text-gray-400 text-sm leading-relaxed">
+              Finders receive immediate on-chain cryptocurrency rewards directly to their wallet,
+              cultivating an honest campus community.
+            </p>
           </div>
         </div>
       </section>
 
-      {/* Why Blockchain Section */}
-      <section className="bg-blue-50 py-16 px-6">
-        <div className="max-w-4xl mx-auto">
-          <h3 className="text-3xl font-bold text-center mb-8">Why Blockchain?</h3>
-          <div className="space-y-6 text-lg text-gray-700">
-            <p>
-              Traditional lost and found systems rely on centralized databases and manual verification, 
-              which can be slow, opaque, and vulnerable to fraud. LostChain uses blockchain technology 
-              to solve these problems:
-            </p>
-            
-            <div className="grid md:grid-cols-2 gap-6 mt-8">
-              <div className="bg-white p-6 rounded-lg">
-                <h4 className="font-semibold text-blue-600 mb-2">🚫 No Intermediaries</h4>
-                <p className="text-gray-600">
-                  Smart contracts automatically match items and distribute rewards without requiring 
-                  a trusted third party.
-                </p>
-              </div>
-              
-              <div className="bg-white p-6 rounded-lg">
-                <h4 className="font-semibold text-blue-600 mb-2">🔍 Complete Transparency</h4>
-                <p className="text-gray-600">
-                  All transactions are recorded on the blockchain, creating an auditable trail that 
-                  anyone can verify.
-                </p>
-              </div>
-              
-              <div className="bg-white p-6 rounded-lg">
-                <h4 className="font-semibold text-blue-600 mb-2">🛡️ Fraud Prevention</h4>
-                <p className="text-gray-600">
-                  Cryptographic hashing prevents malicious actors from claiming items they don't own 
-                  or gaming the system.
-                </p>
-              </div>
-              
-              <div className="bg-white p-6 rounded-lg">
-                <h4 className="font-semibold text-blue-600 mb-2">⚡ Instant Payments</h4>
-                <p className="text-gray-600">
-                  Rewards are automatically released the moment an exchange is confirmed - no waiting 
-                  for manual processing.
-                </p>
-              </div>
+      {/* 4 Step Architecture Flow */}
+      <section className="max-w-6xl mx-auto py-20 px-8 w-full">
+        <h2 className="font-kontras text-4xl md:text-5xl font-bold text-center text-white mb-16">
+          The 4-Step <span className="text-gradient-coral italic font-normal">Lifecycle</span>
+        </h2>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="glass-panel p-8 rounded-2xl flex items-start gap-5">
+            <span className="font-kontras text-4xl font-bold text-[#FB3640] shrink-0">01</span>
+            <div>
+              <h4 className="font-kontras text-2xl font-bold text-white mb-2">Registration</h4>
+              <p className="text-gray-400 text-sm leading-relaxed">
+                The owner submits their lost item details along with a cryptocurrency reward deposited into escrow.
+              </p>
+            </div>
+          </div>
+
+          <div className="glass-panel p-8 rounded-2xl flex items-start gap-5">
+            <span className="font-kontras text-4xl font-bold text-[#FB3640] shrink-0">02</span>
+            <div>
+              <h4 className="font-kontras text-2xl font-bold text-white mb-2">Finder Report</h4>
+              <p className="text-gray-400 text-sm leading-relaxed">
+                A finder logs general attributes of the item found. The attributes are cryptographically commitment-hashed.
+              </p>
+            </div>
+          </div>
+
+          <div className="glass-panel p-8 rounded-2xl flex items-start gap-5">
+            <span className="font-kontras text-4xl font-bold text-[#FB3640] shrink-0">03</span>
+            <div>
+              <h4 className="font-kontras text-2xl font-bold text-white mb-2">Automated Match</h4>
+              <p className="text-gray-400 text-sm leading-relaxed">
+                The protocol identifies matching records based on standardized properties, alerting both participants.
+              </p>
+            </div>
+          </div>
+
+          <div className="glass-panel p-8 rounded-2xl flex items-start gap-5">
+            <span className="font-kontras text-4xl font-bold text-[#FB3640] shrink-0">04</span>
+            <div>
+              <h4 className="font-kontras text-2xl font-bold text-white mb-2">Handover & Release</h4>
+              <p className="text-gray-400 text-sm leading-relaxed">
+                Ownership is verified in person. The owner approves the return, instantly releasing the escrowed reward.
+              </p>
             </div>
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="max-w-4xl mx-auto py-16 px-6 text-center">
-        <h3 className="text-3xl font-bold mb-4">Ready to Get Started?</h3>
-        <p className="text-lg text-gray-600 mb-8">
-          Join LostChain today and help create a more honest, efficient lost and found system for your campus.
-        </p>
-        <div className="flex gap-4 justify-center">
-          <Link href="/report">
-            <Button size="lg" className="text-lg px-8">
-              Report Found Item
-            </Button>
-          </Link>
-          <Link href="/find">
-            <Button size="lg" variant="outline" className="text-lg px-8">
-              Find Lost Item
-            </Button>
-          </Link>
+      <section className="max-w-4xl mx-auto py-16 px-8 text-center w-full">
+        <div className="glass-panel p-12 rounded-3xl border-[#FB3640]/30 shadow-[0_0_50px_rgba(251,54,64,0.15)] relative overflow-hidden">
+          <h3 className="font-kontras text-4xl font-bold text-white mb-4">
+            Experience the Future of Lost & Found
+          </h3>
+          <p className="text-gray-300 text-sm md:text-base max-w-xl mx-auto mb-8 font-light">
+            Built on Ethereum smart contracts. Secure your valuable belongings with decentralized cryptography today.
+          </p>
+          <div className="flex flex-wrap gap-4 justify-center">
+            <Link href="/find">
+              <Button className="btn-imperial px-8 py-6 rounded-xl text-base font-semibold flex items-center gap-2">
+                Report Lost Item
+                <ArrowRight className="w-4 h-4" />
+              </Button>
+            </Link>
+            <Link href="/report">
+              <Button className="btn-glass px-8 py-6 rounded-xl text-base font-semibold">
+                Report Found Item
+              </Button>
+            </Link>
+          </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t py-8 text-center text-gray-500 text-sm bg-white">
-        <p>&copy; 2025 LostChain. Built for college campuses everywhere.</p>
-        <p className="mt-2">Powered by Ethereum • Secured by Cryptography • Driven by Community</p>
+      <footer className="py-8 px-8 border-t border-white/10 bg-[#000F08]/80 backdrop-blur-xl mt-auto text-center text-xs text-gray-500 font-light flex items-center justify-between max-w-7xl mx-auto w-full">
+        <span className="font-kontras text-lg text-white">
+          Lost<span className="text-[#FB3640]">Chain</span> Protocol
+        </span>
+        <span>&copy; 2026 LostChain. Empowered by Ethereum Smart Contracts.</span>
       </footer>
     </main>
   );

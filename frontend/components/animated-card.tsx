@@ -2,7 +2,6 @@
 
 import { ReactNode } from "react";
 import { motion } from "framer-motion";
-import { Card } from "@/components/ui/card";
 
 interface AnimatedCardProps {
   children: ReactNode;
@@ -17,11 +16,9 @@ export function AnimatedCard({ children, delay = 0, className = "" }: AnimatedCa
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay }}
       whileHover={{ y: -5, transition: { duration: 0.2 } }}
-      className={className}
+      className={`glass-panel glass-panel-hover rounded-3xl overflow-hidden ${className}`}
     >
-      <Card className="h-full shadow-lg hover:shadow-xl transition-shadow duration-300 border-gray-200 bg-white/80 backdrop-blur-sm">
-        {children}
-      </Card>
+      {children}
     </motion.div>
   );
 }

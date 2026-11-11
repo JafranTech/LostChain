@@ -1,0 +1,167 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: #000F08;
+  --color-foreground: #FFFFFF;
+  --color-night: #000F08;
+  --color-imperial: #FB3640;
+  
+  --font-kontras: var(--font-kontras), "Cormorant Garamond", serif;
+  --font-sans: var(--font-sans), "Plus Jakarta Sans", sans-serif;
+
+  --color-card: rgba(0, 15, 8, 0.7);
+  --color-card-foreground: #FFFFFF;
+  --color-popover: rgba(0, 15, 8, 0.95);
+  --color-popover-foreground: #FFFFFF;
+  --color-primary: #FB3640;
+  --color-primary-foreground: #FFFFFF;
+  --color-secondary: rgba(255, 255, 255, 0.06);
+  --color-secondary-foreground: #FFFFFF;
+  --color-muted: rgba(255, 255, 255, 0.05);
+  --color-muted-foreground: #94A3B8;
+  --color-accent: rgba(251, 54, 64, 0.15);
+  --color-accent-foreground: #FB3640;
+  --color-destructive: #FB3640;
+  --color-border: rgba(255, 255, 255, 0.1);
+  --color-input: rgba(255, 255, 255, 0.08);
+  --color-ring: #FB3640;
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+:root {
+  --radius: 0.875rem;
+  --night: #000F08;
+  --imperial: #FB3640;
+}
+
+/* Kontras High-Fashion Heading Font */
+.font-kontras {
+  font-family: var(--font-kontras), "Cormorant Garamond", Georgia, serif;
+  letter-spacing: -0.02em;
+}
+
+/* Liquid Glass Panels */
+.glass-panel {
+  background: rgba(0, 15, 8, 0.7);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 
+    0 20px 50px rgba(0, 0, 0, 0.6),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.glass-panel-hover {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-panel-hover:hover {
+  border-color: rgba(251, 54, 64, 0.45);
+  box-shadow: 
+    0 24px 60px rgba(0, 0, 0, 0.7),
+    0 0 35px rgba(251, 54, 64, 0.22),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+/* Liquid Glass Input Fields */
+.glass-input {
+  background: rgba(255, 255, 255, 0.04) !important;
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: #FFFFFF !important;
+  transition: all 0.25s ease;
+}
+
+.glass-input:focus {
+  border-color: #FB3640 !important;
+  box-shadow: 0 0 20px rgba(251, 54, 64, 0.35) !important;
+  outline: none !important;
+}
+
+.glass-input::placeholder {
+  color: #64748B !important;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  opacity: 0.65;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+
+/* Liquid Glass Buttons */
+.btn-imperial {
+  background: linear-gradient(135deg, #FB3640 0%, #D81E29 100%);
+  color: #FFFFFF;
+  box-shadow: 
+    0 8px 24px rgba(251, 54, 64, 0.35),
+    inset 0 1px 1px rgba(255, 255, 255, 0.3);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-imperial:hover {
+  background: linear-gradient(135deg, #ff4d56 0%, #FB3640 100%);
+  box-shadow: 
+    0 12px 32px rgba(251, 54, 64, 0.5),
+    inset 0 1px 1px rgba(255, 255, 255, 0.45);
+  transform: translateY(-1px);
+}
+
+.btn-glass {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #FFFFFF;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.15);
+  transition: all 0.25s ease;
+}
+
+.btn-glass:hover {
+  background: rgba(251, 54, 64, 0.12);
+  border-color: rgba(251, 54, 64, 0.5);
+  box-shadow: 0 0 20px rgba(251, 54, 64, 0.25);
+}
+
+/* Text Gradients */
+.text-gradient-imperial {
+  background: linear-gradient(135deg, #FFFFFF 25%, #FB3640 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-coral {
+  background: linear-gradient(135deg, #FB3640 0%, #FFA8AC 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Custom Scrollbar for Liquid Night Aesthetic */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #000F08;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 9999px;
+  border: 2px solid #000F08;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #FB3640;
+}

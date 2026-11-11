@@ -1,22 +1,38 @@
-# Environment variables
-.env
-.env.local
-.env*.local
+# Dependencies
+node_modules/
+.pnp
+.pnp.*
 
-# Vercel
-.vercel
+# Build output
+.next/
+out/
+build/
+dist/
+coverage/
+**/artifacts/
+**/cache/
+**/typechain-types/
 
-# Optional: Exclude CLI-only deployment files if you created them
-deploy.sh
-DEPLOYMENT.md
-QUICKSTART.md
-DEPLOY_NOW.md
-PRE_DEPLOY_CHECKLIST.md
-package.json
-package-lock.json
+# Environment files (keep example templates)
+.env*
+!.env.example
+!**/.env.example
 
-# Keep these for website deployment:
-# vercel.json
-# .vercelignore
-# .env.example
-# VERCEL_DEPLOY.md
+# Deployment and local tooling
+.vercel/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Local/editor and OS files
+.DS_Store
+Thumbs.db
+*.tsbuildinfo
+*.pem
+*.key
+*.p12
+*.pfx
+*.keystore

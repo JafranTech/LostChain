@@ -23,6 +23,8 @@ export interface LostItemReport {
   status: 'pending' | 'matched' | 'confirmed';
   timestamp: string;
   userAddress?: string;
+  txHash?: string;
+  contractReportId?: number;
 }
 
 export interface FoundItemReport {
@@ -41,6 +43,8 @@ export interface FoundItemReport {
   timestamp: string;
   reward?: string;
   userAddress?: string;
+  txHash?: string;
+  contractReportId?: number;
 }
 
 export interface Activity {
@@ -48,6 +52,7 @@ export interface Activity {
   type: 'match' | 'report' | 'confirmation' | 'reward';
   message: string;
   timestamp: string;
+  txHash?: string;
 }
 
 export interface Match {
@@ -59,6 +64,8 @@ export interface Match {
   otherParty: string;
   lostReportId?: string;
   foundReportId?: string;
+  txHash?: string;
+  contractMatchId?: number;
 }
 
 // Local storage keys - now user-specific
@@ -94,6 +101,17 @@ const setToStorage = <T>(key: string, value: T): void => {
   }
 };
 
+// Check if two items match by category, itemType, brand and color
+export const itemsMatch = (lost: LostItemReport, found: FoundItemReport): boolean => {
+  if (lost.status === 'confirmed' || found.status === 'confirmed') return false;
+  const norm = (s?: string) => (s || '').trim().toLowerCase();
+  const catMatch = norm(lost.category) === norm(found.category);
+  const typeMatch = norm(lost.itemType) === norm(found.itemType);
+  const brandMatch = norm(lost.brand) === norm(found.brand);
+  const colorMatch = !lost.color || !found.color || norm(lost.color) === norm(found.color);
+  return catMatch && typeMatch && brandMatch && colorMatch;
+};
+
 // Lost Items
 export const getLostItems = (userAddress?: string): LostItemReport[] => {
   const key = getUserKey(LOST_ITEMS_KEY, userAddress);
@@ -117,6 +135,7 @@ export const addLostItem = (report: Omit<LostItemReport, 'id' | 'timestamp' | 's
   addActivity({
     type: 'report',
     message: `Reported lost item: ${report.itemType} (${report.brand})`,
+    txHash: report.txHash,
   }, userAddress);
   
   return newReport;
@@ -155,6 +174,7 @@ export const addFoundItem = (report: Omit<FoundItemReport, 'id' | 'timestamp' | 
   addActivity({
     type: 'report',
     message: `Reported found item: ${report.itemType} (${report.brand})`,
+    txHash: report.txHash,
   }, userAddress);
   
   return newReport;
@@ -184,8 +204,7 @@ export const addActivity = (activity: Omit<Activity, 'id' | 'timestamp'>, userAd
     id: `activity_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
     timestamp: new Date().toLocaleString(),
   };
-  activities.unshift(newActivity); // Add to beginning
-  // Keep only last 50 activities
+  activities.unshift(newActivity);
   if (activities.length > 50) {
     activities.splice(50);
   }
@@ -196,7 +215,43 @@ export const addActivity = (activity: Omit<Activity, 'id' | 'timestamp'>, userAd
 // Matches
 export const getMatches = (userAddress?: string): Match[] => {
   const key = getUserKey(MATCHES_KEY, userAddress);
-  return getFromStorage<Match[]>(key, []);
+  let matches = getFromStorage<Match[]>(key, []);
+  
+  // Auto-detect matches between lost and found items
+  const lostItems = getLostItems(userAddress);
+  const foundItems = getFoundItems(userAddress);
+  
+  let newMatchFound = false;
+  for (const lost of lostItems) {
+    for (const found of foundItems) {
+      const alreadyMatched = matches.some(m => m.lostReportId === lost.id || m.foundReportId === found.id);
+      if (!alreadyMatched && itemsMatch(lost, found)) {
+        const newMatch: Match = {
+          id: `match_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`,
+          itemName: `${lost.itemType} - ${lost.brand}`,
+          matchDate: new Date().toLocaleDateString(),
+          status: 'pending_confirmation',
+          reward: lost.rewardAmount || '0.001',
+          otherParty: found.userAddress ? `${found.userAddress.slice(0, 6)}...${found.userAddress.slice(-4)}` : 'Finder (Campus Student)',
+          lostReportId: lost.id,
+          foundReportId: found.id,
+          contractMatchId: 1,
+        };
+        matches.push(newMatch);
+        newMatchFound = true;
+        lost.status = 'matched';
+        found.status = 'matched';
+      }
+    }
+  }
+  
+  if (newMatchFound) {
+    setToStorage(key, matches);
+    setToStorage(getUserKey(LOST_ITEMS_KEY, userAddress), lostItems);
+    setToStorage(getUserKey(FOUND_ITEMS_KEY, userAddress), foundItems);
+  }
+  
+  return matches;
 };
 
 export const addMatch = (match: Omit<Match, 'id'>, userAddress?: string): Match => {
@@ -209,10 +264,10 @@ export const addMatch = (match: Omit<Match, 'id'>, userAddress?: string): Match 
   matches.push(newMatch);
   setToStorage(key, matches);
   
-  // Add activity
   addActivity({
     type: 'match',
     message: `Match found for ${match.itemName}`,
+    txHash: match.txHash,
   }, userAddress);
   
   return newMatch;

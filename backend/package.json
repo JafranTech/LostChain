@@ -1,0 +1,17 @@
+{
+  "name": "lostchain-backend",
+  "version": "1.0.0",
+  "description": "Smart contracts and deployment scripts for LostChain",
+  "main": "index.js",
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "node": "hardhat node",
+    "deploy:local": "hardhat run scripts/deploy.js --network localhost"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "hardhat": "^2.22.19"
+  }
+}
+

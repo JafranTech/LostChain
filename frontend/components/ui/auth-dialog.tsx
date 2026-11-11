@@ -33,7 +33,6 @@ export function ProfileDialog({ open, onOpenChange, onProfileComplete }: Profile
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Load existing profile data when dialog opens
   useEffect(() => {
     if (open && address) {
       const profile = getUserProfile(address);
@@ -57,36 +56,24 @@ export function ProfileDialog({ open, onOpenChange, onProfileComplete }: Profile
       return;
     }
 
-    // Validate phone number format
-    const phoneRegex = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
-    if (!phoneRegex.test(formData.phoneNumber)) {
+    if (formData.phoneNumber.length < 7) {
       setError("Please enter a valid phone number");
-      return;
-    }
-
-    // Validate email
-    if (!formData.email.includes("@")) {
-      setError("Please enter a valid email address");
       return;
     }
 
     setIsSubmitting(true);
     
     try {
-      // Check if profile exists to determine if we're creating or updating
       const existingProfile = getUserProfile(address);
       
       if (existingProfile) {
-        // Update existing profile
         updateUserProfile(address, {
           fullName: formData.fullName,
           email: formData.email,
           phoneNumber: formData.phoneNumber,
           university: formData.university,
         });
-        console.log("Profile updated successfully");
       } else {
-        // Create new profile
         createUserProfile({
           walletAddress: address,
           fullName: formData.fullName,
@@ -94,7 +81,6 @@ export function ProfileDialog({ open, onOpenChange, onProfileComplete }: Profile
           phoneNumber: formData.phoneNumber,
           university: formData.university,
         });
-        console.log("Profile created successfully");
       }
 
       onOpenChange(false);
@@ -109,83 +95,99 @@ export function ProfileDialog({ open, onOpenChange, onProfileComplete }: Profile
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
-    setError(""); // Clear error when user types
+    setError("");
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px]">
-        <DialogHeader>
-          <DialogTitle className="text-2xl font-bold text-center">
-            Complete Your Profile
+      <DialogContent className="sm:max-w-[500px] glass-panel bg-[#000F08]/95 border-white/15 text-white p-8 rounded-3xl shadow-2xl">
+        <DialogHeader className="space-y-2">
+          <DialogTitle className="font-kontras text-3xl font-bold text-center text-white">
+            Identity Profile
           </DialogTitle>
-          <DialogDescription className="text-center">
-            We need some information to help reunite you with your items
+          <DialogDescription className="text-center text-gray-400 text-sm">
+            Contact information for coordinating physical handovers and verification
           </DialogDescription>
         </DialogHeader>
         
         {error && (
-          <Alert className="border-red-500 bg-red-50">
-            <AlertCircle className="h-4 w-4 text-red-600" />
-            <AlertDescription className="text-red-800">
+          <Alert className="border-[#FB3640]/40 bg-[#FB3640]/10 text-red-300 rounded-xl">
+            <AlertCircle className="h-4 w-4 text-[#FB3640]" />
+            <AlertDescription className="text-red-200 text-sm">
               {error}
             </AlertDescription>
           </Alert>
         )}
 
-        <form onSubmit={handleSignup} className="space-y-4 mt-4">
+        <form onSubmit={handleSignup} className="space-y-5 mt-4">
           <div className="space-y-2">
-            <Label htmlFor="fullName">Full Name *</Label>
+            <Label htmlFor="fullName" className="text-xs uppercase tracking-wider font-medium text-gray-300">
+              Full Name *
+            </Label>
             <Input
               id="fullName"
               type="text"
-              placeholder="John Doe"
+              placeholder="e.g. Alice Chen"
               value={formData.fullName}
               onChange={(e) => handleInputChange("fullName", e.target.value)}
+              className="glass-input h-12 rounded-xl text-white"
               required
             />
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="email">Email *</Label>
+            <Label htmlFor="email" className="text-xs uppercase tracking-wider font-medium text-gray-300">
+              Email *
+            </Label>
             <Input
               id="email"
               type="email"
-              placeholder="you@university.edu"
+              placeholder="alice@campus.edu"
               value={formData.email}
               onChange={(e) => handleInputChange("email", e.target.value)}
+              className="glass-input h-12 rounded-xl text-white"
               required
             />
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="phoneNumber">Phone Number *</Label>
+            <Label htmlFor="phoneNumber" className="text-xs uppercase tracking-wider font-medium text-gray-300">
+              Phone Number *
+            </Label>
             <Input
               id="phoneNumber"
               type="tel"
-              placeholder="(123) 456-7890"
+              placeholder="+1 (555) 019-2834"
               value={formData.phoneNumber}
               onChange={(e) => handleInputChange("phoneNumber", e.target.value)}
+              className="glass-input h-12 rounded-xl text-white"
               required
             />
             <p className="text-xs text-gray-500">
-              We'll use this to contact you when your item is found
+              Used strictly for in-person meetup verification.
             </p>
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="university">University (Optional)</Label>
+            <Label htmlFor="university" className="text-xs uppercase tracking-wider font-medium text-gray-300">
+              Campus / Organization
+            </Label>
             <Input
               id="university"
               type="text"
-              placeholder="Boston University"
+              placeholder="e.g. Central University"
               value={formData.university}
               onChange={(e) => handleInputChange("university", e.target.value)}
+              className="glass-input h-12 rounded-xl text-white"
             />
           </div>
           
-          <Button type="submit" className="w-full" disabled={isSubmitting}>
-            {isSubmitting ? "Creating Profile..." : "Complete Profile"}
+          <Button
+            type="submit"
+            className="btn-imperial w-full py-6 text-base font-semibold rounded-xl mt-6 shadow-[0_0_20px_rgba(251,54,64,0.35)]"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Saving Profile..." : "Save Identity Profile"}
           </Button>
         </form>
       </DialogContent>

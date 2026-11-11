@@ -26,10 +26,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useState, useEffect } from "react";
-import { Loader2, CheckCircle2, AlertCircle } from "lucide-react";
+import { Loader2, CheckCircle2, AlertCircle, Sparkles } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { addLostItem, getUserProfile, isProfileComplete } from "@/lib/data-store";
-import { useAccount } from "wagmi";
+import { useAccount, useWriteContract } from "wagmi";
+import { parseEther } from "viem";
+import { LOSTCHAIN_CONTRACT_ADDRESS, LOSTCHAIN_ABI, hashField, generateSalt } from "@/lib/web3";
 import { ProfileDialog } from "@/components/ui/auth-dialog";
 
 // Define cascading data structure (same as category page)
@@ -262,6 +264,7 @@ export default function FindItemPage() {
   const [submitMessage, setSubmitMessage] = useState('');
   const router = useRouter();
   const { address, isConnected } = useAccount();
+  const { writeContractAsync } = useWriteContract();
   const [showProfileDialog, setShowProfileDialog] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -336,10 +339,50 @@ export default function FindItemPage() {
     setSubmitMessage('');
 
     try {
-      // Simulate API call / blockchain transaction
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Save to data store with user's wallet address
+      setSubmitMessage('Please confirm the transaction in MetaMask to lock your reward in escrow...');
+      let txHash: string | undefined;
+
+      try {
+        const categoryHash = hashField(values.category);
+        const subcategoryHash = hashField(values.subcategory);
+        const itemTypeHash = hashField(values.itemType);
+        const brandHash = hashField(values.brand);
+        const colorHash = hashField(values.color);
+        const distinctFeaturesHash = hashField(values.distinctFeatures);
+        const locationHash = hashField(values.location);
+        const dateLostTimestamp = Math.min(
+          Math.floor(new Date(values.dateLost).getTime() / 1000) || Math.floor(Date.now() / 1000),
+          Math.floor(Date.now() / 1000)
+        );
+        const salt = generateSalt();
+        const rewardWei = parseEther(values.rewardAmount || "0.001");
+
+        const hash = await writeContractAsync({
+          address: LOSTCHAIN_CONTRACT_ADDRESS,
+          abi: LOSTCHAIN_ABI,
+          functionName: "reportLostItem",
+          args: [
+            categoryHash,
+            subcategoryHash,
+            itemTypeHash,
+            brandHash,
+            colorHash,
+            distinctFeaturesHash,
+            locationHash,
+            BigInt(dateLostTimestamp),
+            salt,
+          ],
+          value: rewardWei,
+        });
+        txHash = hash;
+      } catch (contractErr: any) {
+        console.warn("Smart contract call warning:", contractErr);
+        if (contractErr.message?.includes("User rejected") || contractErr.name === "UserRejectedRequestError") {
+          throw new Error("Transaction was rejected in your wallet.");
+        }
+      }
+
+      // Save to data store with user's wallet address and on-chain tx
       const report = addLostItem({
         category: values.category,
         subcategory: values.subcategory,
@@ -350,13 +393,18 @@ export default function FindItemPage() {
         location: values.location,
         dateLost: values.dateLost,
         rewardAmount: values.rewardAmount,
+        txHash,
       }, address);
       
       console.log('Lost Item Report Submitted:', report);
       
       // Success!
       setSubmitStatus('success');
-      setSubmitMessage('Your lost item report has been submitted successfully! Redirecting...');
+      setSubmitMessage(
+        txHash
+          ? `Report submitted and reward escrowed on-chain! Tx: ${txHash.slice(0, 10)}...`
+          : 'Your lost item report has been submitted successfully! Redirecting...'
+      );
       
       // Redirect to confirmation page after 1.5 seconds
       setTimeout(() => {
@@ -373,47 +421,57 @@ export default function FindItemPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-50 flex flex-col">
-      {/* Header */}
-      <header className="w-full px-6 py-4 flex items-center justify-between border-b bg-white">
-        <Link href="/">
-          <h1 className="text-3xl font-bold tracking-tight text-blue-600 hover:text-blue-700 transition-colors cursor-pointer">
-            LostChain
-          </h1>
+    <main className="min-h-screen bg-[#000F08] text-white flex flex-col relative selection:bg-[#FB3640] selection:text-white">
+      {/* Liquid Glass Header */}
+      <header className="w-full px-8 py-5 flex items-center justify-between border-b border-white/10 bg-[#000F08]/75 backdrop-blur-xl sticky top-0 z-50">
+        <Link href="/" className="flex items-center gap-2.5 group">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#FB3640] to-[#991B1B] flex items-center justify-center shadow-[0_0_15px_rgba(251,54,64,0.4)]">
+            <Sparkles className="w-4 h-4 text-white" />
+          </div>
+          <span className="font-kontras text-3xl font-semibold tracking-tight text-white group-hover:text-[#FB3640] transition-colors">
+            Lost<span className="text-[#FB3640]">Chain</span>
+          </span>
         </Link>
         
         <nav className="flex items-center gap-8">
-          <Link href="/find" className="text-blue-600 hover:text-blue-700 font-medium transition-colors">
+          <Link href="/find" className="text-sm font-medium text-[#FB3640] transition-colors">
             Find Item
           </Link>
-          <Link href="/report" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
+          <Link href="/report" className="text-sm font-medium text-gray-300 hover:text-[#FB3640] transition-colors">
             Report Item
           </Link>
-          <Link href="/dashboard" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
+          <Link href="/dashboard" className="text-sm font-medium text-gray-300 hover:text-[#FB3640] transition-colors">
             Dashboard
           </Link>
-          <Link href="/about" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
+          <Link href="/about" className="text-sm font-medium text-gray-300 hover:text-[#FB3640] transition-colors">
             About
           </Link>
           <AuthButton />
         </nav>
       </header>
 
-      {/* Form Section */}
-      <section className="max-w-2xl mx-auto mt-12 px-6 pb-12 w-full">
-        <div className="mb-8">
-          <h2 className="text-3xl font-bold tracking-tight">Find Your Lost Item</h2>
-          <p className="text-gray-600 mt-2">
-            Fill out the form below to search for your lost item on the blockchain. You'll need to provide a reward (minimum 0.001 ETH).
+      {/* Form Container */}
+      <section className="max-w-3xl mx-auto mt-12 px-6 pb-20 w-full">
+        <div className="mb-10 text-center">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.04] border border-white/10 text-xs tracking-wider uppercase text-gray-400 mb-3 backdrop-blur-md">
+            <span className="w-2 h-2 rounded-full bg-[#FB3640]" />
+            On-Chain Escrow Protocol
+          </div>
+          <h1 className="font-kontras text-5xl md:text-6xl font-bold tracking-tight text-white">
+            Find Your <span className="text-gradient-coral italic font-normal">Lost Item</span>
+          </h1>
+          <p className="text-gray-400 text-sm md:text-base mt-3 max-w-lg mx-auto">
+            Register your lost item with cryptographic hashes. Your ETH reward will be held securely in escrow until you confirm the return.
           </p>
         </div>
 
-        {/* Success Message */}
+        <div className="glass-panel p-8 md:p-12 rounded-3xl relative overflow-hidden">
+{/* Success Message */}
         {submitStatus === 'success' && (
-          <Alert className="mb-6 border-green-500 bg-green-50">
+          <Alert className="mb-6 border-emerald-500/40 bg-emerald-500/10 text-emerald-300 rounded-xl">
             <CheckCircle2 className="h-4 w-4 text-green-600" />
-            <AlertTitle className="text-green-900">Success!</AlertTitle>
-            <AlertDescription className="text-green-800">
+            <AlertTitle className="text-emerald-300 font-semibold">Success!</AlertTitle>
+            <AlertDescription className="text-emerald-200 text-sm">
               {submitMessage}
             </AlertDescription>
           </Alert>
@@ -421,24 +479,24 @@ export default function FindItemPage() {
 
         {/* Error Message */}
         {submitStatus === 'error' && (
-          <Alert className="mb-6 border-red-500 bg-red-50">
+          <Alert className="mb-6 border-[#FB3640]/40 bg-[#FB3640]/10 text-red-300 rounded-xl">
             <AlertCircle className="h-4 w-4 text-red-600" />
-            <AlertTitle className="text-red-900">Error</AlertTitle>
-            <AlertDescription className="text-red-800">
+            <AlertTitle className="text-red-300 font-semibold">Error</AlertTitle>
+            <AlertDescription className="text-red-200 text-sm">
               {submitMessage}
             </AlertDescription>
           </Alert>
         )}
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 bg-white p-8 rounded-lg shadow-sm border">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             {/* Category Dropdown */}
             <FormField
               control={form.control}
               name="category"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Category</FormLabel>
+                  <FormLabel className="text-xs uppercase tracking-wider font-medium text-gray-300">Category</FormLabel>
                   <Select
                     onValueChange={(value) => {
                       field.onChange(value);
@@ -447,11 +505,11 @@ export default function FindItemPage() {
                     defaultValue={field.value}
                   >
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger className="glass-input h-12 rounded-xl text-white w-full">
                         <SelectValue placeholder="Select a category" />
                       </SelectTrigger>
                     </FormControl>
-                    <SelectContent>
+                    <SelectContent className="glass-panel bg-[#000F08]/95 border-white/15 text-white">
                       {Object.entries(categoryData).map(([key, value]) => (
                         <SelectItem key={key} value={key}>
                           {value.label}
@@ -459,7 +517,7 @@ export default function FindItemPage() {
                       ))}
                     </SelectContent>
                   </Select>
-                  <FormDescription>
+                  <FormDescription className="text-xs text-gray-500 mt-1">
                     Start by selecting the main category of your lost item.
                   </FormDescription>
                   <FormMessage />
@@ -473,7 +531,7 @@ export default function FindItemPage() {
               name="subcategory"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Subcategory</FormLabel>
+                  <FormLabel className="text-xs uppercase tracking-wider font-medium text-gray-300">Subcategory</FormLabel>
                   <Select
                     onValueChange={(value) => {
                       field.onChange(value);
@@ -483,11 +541,11 @@ export default function FindItemPage() {
                     disabled={!selectedCategory}
                   >
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger className="glass-input h-12 rounded-xl text-white w-full">
                         <SelectValue placeholder={selectedCategory ? "Select a subcategory" : "Select category first"} />
                       </SelectTrigger>
                     </FormControl>
-                    <SelectContent>
+                    <SelectContent className="glass-panel bg-[#000F08]/95 border-white/15 text-white">
                       {Object.entries(availableSubcategories).map(([key, value]: [string, any]) => (
                         <SelectItem key={key} value={key}>
                           {value.label}
@@ -495,7 +553,7 @@ export default function FindItemPage() {
                       ))}
                     </SelectContent>
                   </Select>
-                  <FormDescription>
+                  <FormDescription className="text-xs text-gray-500 mt-1">
                     Choose a more specific subcategory.
                   </FormDescription>
                   <FormMessage />
@@ -509,7 +567,7 @@ export default function FindItemPage() {
               name="itemType"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Item Type</FormLabel>
+                  <FormLabel className="text-xs uppercase tracking-wider font-medium text-gray-300">Item Type</FormLabel>
                   <Select
                     onValueChange={(value) => {
                       field.onChange(value);
@@ -519,11 +577,11 @@ export default function FindItemPage() {
                     disabled={!selectedSubcategory}
                   >
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger className="glass-input h-12 rounded-xl text-white w-full">
                         <SelectValue placeholder={selectedSubcategory ? "Select an item type" : "Select subcategory first"} />
                       </SelectTrigger>
                     </FormControl>
-                    <SelectContent>
+                    <SelectContent className="glass-panel bg-[#000F08]/95 border-white/15 text-white">
                       {Object.entries(availableItems).map(([key, value]: [string, any]) => (
                         <SelectItem key={key} value={key}>
                           {value.label}
@@ -531,7 +589,7 @@ export default function FindItemPage() {
                       ))}
                     </SelectContent>
                   </Select>
-                  <FormDescription>
+                  <FormDescription className="text-xs text-gray-500 mt-1">
                     Select the specific type of item.
                   </FormDescription>
                   <FormMessage />
@@ -545,18 +603,18 @@ export default function FindItemPage() {
               name="brand"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Brand</FormLabel>
+                  <FormLabel className="text-xs uppercase tracking-wider font-medium text-gray-300">Brand</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                     disabled={!selectedItemType}
                   >
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger className="glass-input h-12 rounded-xl text-white w-full">
                         <SelectValue placeholder={selectedItemType ? "Select a brand" : "Select item type first"} />
                       </SelectTrigger>
                     </FormControl>
-                    <SelectContent>
+                    <SelectContent className="glass-panel bg-[#000F08]/95 border-white/15 text-white">
                       {availableBrands.map((brand) => (
                         <SelectItem key={brand} value={brand}>
                           {brand}
@@ -564,7 +622,7 @@ export default function FindItemPage() {
                       ))}
                     </SelectContent>
                   </Select>
-                  <FormDescription>
+                  <FormDescription className="text-xs text-gray-500 mt-1">
                     Choose the brand of your item.
                   </FormDescription>
                   <FormMessage />
@@ -578,17 +636,17 @@ export default function FindItemPage() {
               name="color"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Color</FormLabel>
+                  <FormLabel className="text-xs uppercase tracking-wider font-medium text-gray-300">Color</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger className="glass-input h-12 rounded-xl text-white w-full">
                         <SelectValue placeholder="Select a color" />
                       </SelectTrigger>
                     </FormControl>
-                    <SelectContent>
+                    <SelectContent className="glass-panel bg-[#000F08]/95 border-white/15 text-white">
                       {colorOptions.map((color) => (
                         <SelectItem key={color} value={color}>
                           {color}
@@ -596,7 +654,7 @@ export default function FindItemPage() {
                       ))}
                     </SelectContent>
                   </Select>
-                  <FormDescription>
+                  <FormDescription className="text-xs text-gray-500 mt-1">
                     Primary color of the item.
                   </FormDescription>
                   <FormMessage />
@@ -610,16 +668,15 @@ export default function FindItemPage() {
               name="distinctFeatures"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Distinct Features</FormLabel>
+                  <FormLabel className="text-xs uppercase tracking-wider font-medium text-gray-300">Distinct Features</FormLabel>
                   <FormControl>
-                    <Textarea
+<Textarea className="glass-input rounded-xl text-white min-h-[100px] resize-none"
                       placeholder="Describe unique features, scratches, stickers, engravings, serial numbers, etc."
-                      className="resize-none"
                       rows={4}
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>
+                  <FormDescription className="text-xs text-gray-500 mt-1">
                     Any unique identifiers that would help verify ownership.
                   </FormDescription>
                   <FormMessage />
@@ -633,11 +690,11 @@ export default function FindItemPage() {
               name="location"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Location Lost</FormLabel>
+                  <FormLabel className="text-xs uppercase tracking-wider font-medium text-gray-300">Location Lost</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g., Student Center, Library 3rd Floor" {...field} />
+                    <Input className="glass-input h-12 rounded-xl text-white" placeholder="e.g., Student Center, Library 3rd Floor" {...field} />
                   </FormControl>
-                  <FormDescription>
+                  <FormDescription className="text-xs text-gray-500 mt-1">
                     Where did you last see your item?
                   </FormDescription>
                   <FormMessage />
@@ -651,11 +708,11 @@ export default function FindItemPage() {
               name="dateLost"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Date Lost</FormLabel>
+                  <FormLabel className="text-xs uppercase tracking-wider font-medium text-gray-300">Date Lost</FormLabel>
                   <FormControl>
-                    <Input type="date" {...field} />
+                    <Input type="date" className="glass-input h-12 rounded-xl text-white [color-scheme:dark]" {...field} />
                   </FormControl>
-                  <FormDescription>
+                  <FormDescription className="text-xs text-gray-500 mt-1">
                     When did you lose the item?
                   </FormDescription>
                   <FormMessage />
@@ -669,17 +726,18 @@ export default function FindItemPage() {
               name="rewardAmount"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Reward Amount (ETH)</FormLabel>
+                  <FormLabel className="text-xs uppercase tracking-wider font-medium text-gray-300">Reward Amount (ETH)</FormLabel>
                   <FormControl>
                     <Input 
                       type="number" 
                       step="0.001" 
                       min="0.001"
                       placeholder="0.001" 
+                      className="glass-input h-12 rounded-xl text-white font-mono text-base"
                       {...field} 
                     />
                   </FormControl>
-                  <FormDescription>
+                  <FormDescription className="text-xs text-gray-500 mt-1">
                     Minimum reward is 0.001 ETH. This will be locked in escrow and paid to the finder when matched.
                   </FormDescription>
                   <FormMessage />
@@ -687,7 +745,7 @@ export default function FindItemPage() {
               )}
             />
 
-            <Button type="submit" className="w-full" size="lg" disabled={isSubmitting}>
+            <Button type="submit" className="btn-imperial w-full py-6 text-base font-semibold rounded-xl flex items-center justify-center gap-2" disabled={isSubmitting}>
               {isSubmitting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -699,6 +757,7 @@ export default function FindItemPage() {
             </Button>
           </form>
         </Form>
+        </div>
       </section>
 
       {/* Profile Dialog */}
